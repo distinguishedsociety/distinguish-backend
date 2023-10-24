@@ -97,10 +97,34 @@ const deleteCoupon = async (req, res) => {
   }
 };
 
+const verifyCoupon = async (req, res) => {  
+  try {
+    let code = ''
+    if(req.body.hasOwnProperty('code')){
+      code = req.body.code
+    }
+    console.log('code',code)
+    const result = await Coupon.findOne({code: code})
+    if(result){
+      return res
+      .status(200)
+      .send({ status: true, data: result, message: 'Coupon is valid!' });
+    }else{
+      return res
+      .status(404)
+      .send({ status: false, message: 'Coupon is invalid!', data: null });
+    }
+  }catch (e){
+    console.log(e);
+    return res.status(500).send({ status: "error", message: e.message });
+  }
+}
+
 module.exports = {
   createCoupon,
   getCoupons,
   updateCoupon,
   deleteCoupon,
-  getCoupon
+  getCoupon,
+  verifyCoupon
 };

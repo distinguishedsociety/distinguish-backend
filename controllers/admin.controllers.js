@@ -1,5 +1,6 @@
 const User = require("../models/user");
 const Category = require("../models/category");
+const Admin = require("../models/adminUser");
 const Joi = require("joi");
 const { OAuth2Client } = require("google-auth-library");
 const Product = require("../models/product");
@@ -14,7 +15,7 @@ const Order = require("../models/order");
 const Blog = require("../models/blog");
 const IntroBanner = require("../models/introBanner");
 const singleUpload = upload.single("image");
-
+var jwt = require('jsonwebtoken');
 
 const s3 = new AWS.S3({
   accessKeyId: process.env.AWS_ACCESS_KEY_ID_DS,
@@ -520,6 +521,52 @@ const getUserOrders = async (req, res) => {
   }
 };
 
+const verfiyAdminUser = async (req,res) => {
+  try {
+    const data = req.body;
+    
+    const response = await Admin.find({email: data.email})
+    console.log(response);
+    if(response){
+      if(response.length <= 0) return res.status(201).send({ status: false, message: 'Invalid Email address.' });
+      const encodePass = jwt.verify(response[0].password, '@@asdfDEJ$*87380!!IUR')
+      if(encodePass != data.password) return res.status(201).send({ status: false, message: 'Invalid password.' });
+      return res.status(200).send({ status: true , message: 'Login Successfully.', data: response[0] });
+    }
+    return res.status(200).send({ status: true, data: filteredOrders });
+  } catch (e) {
+    console.log(e);
+    return res.status(500).send({ status: false, message: e.message });
+  }
+}
+
+const resetPassword = async (req, res) => {
+  try {
+    const data = req.body;
+    
+    const response = await Admin.find({email: data.email})
+    if(response){
+      if(response.length <= 0) return res.status(201).send({ status: false, message: 'Invalid email address.' });
+      var decodePass = jwt.verify(response[0].password, '@@asdfDEJ$*87380!!IUR')
+      console.log('decode',decodePass)
+      if(decodePass !== data.cPass){
+        return res.status(201).send({ status: false, message: 'Invalid Current Password.' });
+      }
+      var token = jwt.sign(data.nPass, '@@asdfDEJ$*87380!!IUR');
+      console.log('token',token)
+      const updatRes = await Admin.updateOne({email: data.email}, {password: token})
+      if(updatRes.hasOwnProperty('acknowledged') && updatRes.acknowledged == true){
+        return res.status(200).send({ status: true , message: ' Password reset Successfully.' });
+      }
+      return res.status(500).send({ status: false , message: 'Something went wrong.', data: '' });
+    }
+    return res.status(500).send({ status: false , message: 'Something went wrong.', data: '' });
+  } catch (e) {
+    console.log(e);
+    return res.status(500).send({ status: false, message: e.message });
+  }
+}
+
 module.exports = {
   getProducts,
   getProduct,
@@ -543,5 +590,7 @@ module.exports = {
   updateBlog,
   getIntroBanner,
   createIntroBanner,
-  updateIntroBanner
+  updateIntroBanner,
+  verfiyAdminUser,
+  resetPassword
 };

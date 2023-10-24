@@ -38,17 +38,17 @@ app.use(function (req, res, next) {
 //     message: err
 //   })
 // });
-const httpsServer = https.createServer({
-  ca: fs.readFileSync('./ssl/bundle.crt'),
-  key: fs.readFileSync('./ssl/thedistinguishedsociety.com.key'),
-  cert: fs.readFileSync('./ssl/thedistinguishedsociety.crt'),
-}, app);
+// const httpsServer = https.createServer({
+//   ca: fs.readFileSync('./ssl/bundle.crt'),
+//   key: fs.readFileSync('./ssl/thedistinguishedsociety.com.key'),
+//   cert: fs.readFileSync('./ssl/thedistinguishedsociety.crt'),
+// }, app);
 
-// app.listen(port, () => {
-//   console.log(`Server is running on port: ${port}`);
-// });
+app.listen(port, () => {
+  console.log(`Server is running on port: ${port}`);
+});
 
-httpsServer.listen(9000, () => {
-  console.log('https server running on port 9000');
-})
+// httpsServer.listen(9000, () => {
+//   console.log('https server running on port 9000');
+// })
 

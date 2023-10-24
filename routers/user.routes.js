@@ -1,6 +1,7 @@
 const express = require("express");
 const checkAuth = require("../middleware/checkAuth.middlewares");
 const userControllers = require("../controllers/users.controllers");
+const couponControllers = require('../controllers/coupon.controllers')
 const router = express.Router();
 
 router.post("/signup", userControllers.userRegister);
@@ -60,5 +61,7 @@ router.get("/blogs", userControllers.getBlogs);
 router.get("/introBanner", userControllers.getIntroBanner);
 
 router.post("/affiliateProgramRegistration", userControllers.affiliateProgramRegistration);
+
+router.post('/verifyCoupon', couponControllers.verifyCoupon)
 
 module.exports = router;

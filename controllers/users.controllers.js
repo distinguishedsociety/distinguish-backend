@@ -15,7 +15,7 @@ const {validateWebhookSignature} = require('razorpay/dist/utils/razorpay-utils')
 const { findOne } = require("../models/user");
 const Blog = require("../models/blog");
 const IntroBanner = require("../models/introBanner");
-
+const {orderMailPrePaid, orderMailPostpaid} = require('../services/orderEmail')
 const userLogin = async (req, res) => {
   try {
     const schema = Joi.object({
@@ -796,6 +796,8 @@ const placeOder = async (req, res) => {
       delivery_country: Joi.string().required(),
       order_type: Joi.string().allow("Prepaid", "COD").required(),
       phoneNumber: Joi.string().required(),
+      isCouponApplied: Joi.boolean(),
+      discountValue: Joi.number()
     });
     const result = schema.validate(req.body);
     console.log("resuult" , result)
@@ -825,6 +827,10 @@ const placeOder = async (req, res) => {
         .status(400)
         .send({ status: "error", message: "Cart is empty." });}
 
+    let discount = 0
+    if(req.body.isCouponApplied){
+      discount = req.body.discountValue;
+    }
     user.cart.map(async (item) => {
       if (item.qty > item.product.inventory[item.size]) {
         await session.abortTransaction()
@@ -932,14 +938,14 @@ const placeOder = async (req, res) => {
               courier_company.estimated_delivery_days;
             const rate = courier_company.rate.rate;
 
-            const cartValueTax = cartValue * 0.12;
-            console.log("CartValueTax: ", cartValueTax)
+            // const cartValueTax = cartValue * 0.12;
+            // console.log("CartValueTax: ", cartValueTax)
             console.log("Shipping charges: ", rate)
             let totalCartValue;
             if (req.body.country != "India") {
-              totalCartValue = cartValue + cartValueTax + parseInt(rate);
+              totalCartValue = cartValue  + parseInt(rate) - discount;
             } else {
-              totalCartValue = cartValue + cartValueTax;
+              totalCartValue = cartValue - discount; 
             }
             totalCartValue = Math.round(totalCartValue)
             console.log("Cart value: ", cartValue);
@@ -965,8 +971,10 @@ const placeOder = async (req, res) => {
               orderStatus: "Initiated",
               orderAmount: totalCartValue,
               cartAmount: cartValue,
-              tax: cartValueTax,
-              shippingCharges: req.body.country != "India" ? rate : 0
+              // tax: cartValueTax,
+              shippingCharges: req.body.country != "India" ? rate : 0,
+              isCouponApplied: req.body.isCouponApplied,
+              discountPrice: req.body.discountValue
             });
 
             await order.save({session: session});
@@ -996,6 +1004,7 @@ const placeOder = async (req, res) => {
                 }
                 
               })
+              const userCart = user.cart;
               user.cart = [];
               await user.save({session: session});
 
@@ -1035,7 +1044,7 @@ const placeOder = async (req, res) => {
                 shipping_charges: 0,
                 giftwrap_charges: 0,
                 transaction_charges: 0,
-                total_discount: 0,
+                total_discount: discount,
                 sub_total: totalCartValue,
                 length: 10,
                 breadth: 15,
@@ -1050,20 +1059,21 @@ const placeOder = async (req, res) => {
                 },
                 data: data,
               });
-
               console.log(result)
               if (result.status !== 200) {
                 console.log(result);
                 await session.abortTransaction()
                 await session.endSession()
+                
                 return res.status(400).send({
                   status: "error",
                   message: "Internal server error occurred.",
                 });
               }
-
+              
               //send delivery details with data
               //clear the cart
+              orderMailPostpaid(data,userCart)
               await session.commitTransaction()
               await session.endSession()
               return res.status(200).send({
@@ -1155,7 +1165,9 @@ const placeGuestOder = async (req, res) => {
         product: Joi.object().required(),
         qty: Joi.number(),
         size: Joi.string().valid("S", "M", "L", "XL")
-      }))
+      })),
+      isCouponApplied: Joi.boolean(),
+      discountValue: Joi.number()
     });
 
     const result = schema.validate(req.body);
@@ -1184,7 +1196,10 @@ const placeGuestOder = async (req, res) => {
       cartValue = itemTotalPrice + cartValue;
     });
     console.log(cartValue);
-
+    let discount = 0
+    if(req.body.isCouponApplied){
+      discount = req.body.discountValue;
+    }
     //Get token from shiprocket
     const email = "demo123@demo.com";
     const password = "Passw0rd.";
@@ -1269,9 +1284,9 @@ const placeGuestOder = async (req, res) => {
             const cartValueTax = cartValue * 0.12;
             let totalCartValue;
             if (req.body.isInternational) {
-              totalCartValue = cartValue + cartValueTax + parseInt(rate);
+              totalCartValue = cartValue  + parseInt(rate) - discount;
             } else {
-              totalCartValue = cartValue + cartValueTax;
+              totalCartValue = cartValue - discount;
             }
             totalCartValue = Math.round(totalCartValue)
 
@@ -1295,7 +1310,9 @@ const placeGuestOder = async (req, res) => {
               orderAmount: totalCartValue,
               cartAmount: cartValue,
               tax: cartValueTax,
-              shippingCharges: req.body.isInternational ? rate : 0
+              shippingCharges: req.body.isInternational ? rate : 0,
+              isCouponApplied: req.body.isCouponApplied,
+              discountPrice: req.body.discountValue
             });
 
             await order.save({session: session});
@@ -1359,7 +1376,7 @@ const placeGuestOder = async (req, res) => {
                 shipping_charges: 0,
                 giftwrap_charges: 0,
                 transaction_charges: 0,
-                total_discount: 0,
+                total_discount: discount,
                 sub_total: totalCartValue,
                 length: 10,
                 breadth: 15,
@@ -1388,6 +1405,7 @@ const placeGuestOder = async (req, res) => {
 
               //send delivery details with data
               //clear the cart
+              orderMailPostpaid(data,req.body.cart)
               await session.commitTransaction()
               await session.endSession()
               return res.status(200).send({
@@ -1453,7 +1471,7 @@ const placeGuestOder = async (req, res) => {
 //Razorpay webhook on payment success
 const razorpayWebhook = async (req, res) => {
   try {
-    const isValidRequest = validateWebhookSignature(JSON.stringify(req.body), req.headers['x-razorpay-signature'], process.env.RAZORPAY_KEY_SECRET)
+    const isValidRequest = validateWebhookSignature(JSON.stringify(req.body), req.headers['x-razorpay-signature'], 'ZBPKCXmiWfserwPATHmLL0nR')
     if(!isValidRequest){
       console.log("Invalid request")
       return res.status(400).send({message: "Invalid request."})
@@ -1476,27 +1494,43 @@ const razorpayWebhook = async (req, res) => {
 
     order.orderStatus = "Placed"
     await order.save()
+    let user;
+    let products = []
+    if(order.user){
+      user = await User.findOne({_id: order.user}).populate({
+        path: "cart",
+        populate: {
+          path: "product",
+          model: "Product",
+        },
+      })
+      user.cart.map(async (cartItem, index) => {
+        const product = await Product.findById(cartItem.product._id)
+        if(!product){
+          console.log("Product not found.")
+        }else{
+          products.push(product)
+          product.inventory[cartItem.size] = product.inventory[cartItem.size] - cartItem.qty
+          await product.save()
+        }
+        
+      })
 
-    const user = await User.findOne({_id: order.user}).populate({
-      path: "cart",
-      populate: {
-        path: "product",
-        model: "Product",
-      },
-    })
-    user.cart.map(async (cartItem, index) => {
-      const product = await Product.findById(cartItem.product._id)
-      if(!product){
-        console.log("Product not found.")
-      }else{
-        product.inventory[cartItem.size] = product.inventory[cartItem.size] - cartItem.qty
-        await product.save()
-      }
-      
-    })
-
-    user.cart = []
-    await user.save()
+      user.cart = []
+      await user.save()
+    }else{
+      order.products.map(async (item) => {
+        const proId = item.product._id
+        const product = await Product.findById(proId)
+        if(!product){
+          console.log("Product not found.")
+        }else{
+          products.push(product)
+          product.inventory[item.size] = product.inventory[item.size] - item.qty
+          await product.save()
+        }
+      })
+    }
     console.log(user)
 
 
@@ -1540,7 +1574,6 @@ const razorpayWebhook = async (req, res) => {
         units: item.qty
       });
     });
-
     const data = {
       order_id: order._id,
       order_date: order.createdAt.toISOString().split("T")[0],
@@ -1573,7 +1606,7 @@ const razorpayWebhook = async (req, res) => {
       shipping_charges: 0,
       giftwrap_charges: 0,
       transaction_charges: 0,
-      total_discount: 0,
+      total_discount: order.discountPrice,
       sub_total: parseFloat(order.orderAmount),
       length: 10,
       breadth: 15,
@@ -1595,14 +1628,14 @@ const razorpayWebhook = async (req, res) => {
       console.log("Failed to create order on shiprocket. Order: ", req.body);
       return res.status(200).send();
     }
-
+    orderMailPrePaid(products, order)
     return res.status(200).send()
     //TODO: notify admin
   } catch (error) {
     console.log(error);
     return res.status(400).send({ status: "error", message: error.message });
   }
-};
+}; 
 
 const getWishlist = async (req, res) => {
   try {

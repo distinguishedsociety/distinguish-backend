@@ -100,4 +100,9 @@ router.patch("/coupon/:id", couponController.updateCoupon);
 
 router.delete("/coupon/:id", couponController.deleteCoupon);
 
+//Admin user
+
+router.post('/admin-login', adminController.verfiyAdminUser)
+router.post('/admin-reset-password', adminController.resetPassword)
+
 module.exports = router;

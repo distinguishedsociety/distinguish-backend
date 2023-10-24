@@ -73,6 +73,13 @@ const orderSchema = new mongoose.Schema(
       enum: ["Initiated", "Placed", "Delivered", "Canceled"],
       default: "Initiated",
     },
+    isCouponApplied: {
+      type: Boolean,
+      default: false,
+    },
+    discountPrice: {
+      type: String,
+    }
   },
   { timestamps: true }
 );

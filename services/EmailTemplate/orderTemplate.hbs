@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Confirmation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            background: linear-gradient(0deg, #E1FFF1 0%, rgba(251, 253, 255, 0.47) 100%);
+        }
+
+        .header {
+            margin-bottom: 20px;
+        }
+
+        .order-details {
+            margin-top: 30px;
+        }
+
+        .order-item {
+            margin-bottom: 20px;
+        }
+
+        .title-label {
+            margin-top: 40px;
+        }
+
+        .grey-line {
+            border-top: 1px solid #FFF;
+        }
+
+        .image {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+        }
+
+        .product-details {
+            display: inline-block;
+            vertical-align: top;
+            margin-left: 20px;
+        }
+
+        .product-detail-container {
+            margin: 20px 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <p>Hello Distinguished Society Team,</p>
+            <p>We're excited to inform you about a new order placed by a valued customer. Here are the order details:</p>
+        </div>
+
+        <div class="order-details">
+            <p><strong>Order Number:</strong> {{orderNumber}}</p>
+            <p><strong>Order Date:</strong> {{orderDate}}</p>
+            <p><strong>Customer Name:</strong> {{customerName}}</p>
+            <p><strong>Customer Email:</strong> {{customerEmail}}</p>
+            <p><strong>Customer Phone:</strong> {{customerPhone}}</p>
+            <br>
+            <p><strong>Shipping Address:</strong></p>
+            <p><strong>Address:</strong> {{address}}</p>
+            <p><strong>City:</strong> {{city}}</p>
+            <p><strong>State:</strong> {{state}}</p>
+            <p><strong>Coountry:</strong> {{country}}</p>
+            <p><strong>pincode:</strong> {{pincode}}</p>
+            <br>
+            <p><strong>Billing Address:</strong></p>
+            <p><strong>City:</strong> {{city}}</p>
+            <p><strong>State:</strong> {{state}}</p>
+            <p><strong>Coountry:</strong> {{country}}</p>
+            <p><strong>pincode:</strong> {{pincode}}</p>
+            <p><strong>Order Status:</strong> {{ordStatus}}</p>
+            <p><strong>Payment Type:</strong> {{payType}}</p>
+            <p><strong>discount:</strong> {{discount}}</p>
+
+            <h2 class="title-label">Order Items:</h2>
+            {{#each orderItems}}
+            <div class="order-item">
+                <img class="image" src="{{this.productImage}}" alt="{{this.productName}}">
+                <div class="product-details">
+                    <p><strong>Product:</strong> {{this.productName}}</p>
+                    <p class="grey-color"><strong>Quantity:</strong> {{this.quantity}}</p>
+                    <p><strong>Price:</strong> {{this.price}} each</p>
+                </div>
+            </div>
+            {{/each}}
+        </div>
+
+        <p>Thanks</p>
+    </div>
+</body>
+
+</html>
