@@ -14,12 +14,12 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 // app.use(morgan("tiny"));
-app.use(
-  cors({
-    exposedHeaders: ["Content-Length", "x-auth-token"],
-    origin: "*",
-  })
-);
+// app.use(
+//   cors({
+//     exposedHeaders: ["Content-Length", "x-auth-token"],
+//     origin: "*",
+//   })
+// );
 
 
 app.use("/internal/api/users", userRouter);
@@ -33,11 +33,11 @@ app.use(function (req, res, next) {
 });
 
 // error handler
-// app.use(function(err, req, res, next) {
-//   res.status(err.status || 500).json({
-//     message: err
-//   })
-// });
+app.use(function(err, req, res, next) {
+  res.status(err.status || 500).json({
+    message: err
+  })
+});
 // const httpsServer = https.createServer({
 //   ca: fs.readFileSync('./ssl/bundle.crt'),
 //   key: fs.readFileSync('./ssl/thedistinguishedsociety.com.key'),
