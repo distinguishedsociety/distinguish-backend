@@ -14,12 +14,12 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 // app.use(morgan("tiny"));
-// app.use(
-//   cors({
-//     exposedHeaders: ["Content-Length", "x-auth-token"],
-//     origin: "*",
-//   })
-// );
+app.use(
+  cors({
+    exposedHeaders: ["Content-Length", "x-auth-token"],
+    origin: "*",
+  })
+);
 
 
 app.use("/internal/api/users", userRouter);
