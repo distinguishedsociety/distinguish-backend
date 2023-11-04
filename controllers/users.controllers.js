@@ -798,7 +798,7 @@ const placeOder = async (req, res) => {
       phoneNumber: Joi.string().required(),
       isCouponApplied: Joi.boolean(),
       discountValue: Joi.number(),
-      couponCode: Joi.string(),
+      couponCode: Joi.string().allow('', null),
     });
     const result = schema.validate(req.body);
     console.log("resuult" , result)
