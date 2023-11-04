@@ -797,7 +797,8 @@ const placeOder = async (req, res) => {
       order_type: Joi.string().allow("Prepaid", "COD").required(),
       phoneNumber: Joi.string().required(),
       isCouponApplied: Joi.boolean(),
-      discountValue: Joi.number()
+      discountValue: Joi.number(),
+      couponCode: Joi.string(),
     });
     const result = schema.validate(req.body);
     console.log("resuult" , result)
@@ -974,7 +975,8 @@ const placeOder = async (req, res) => {
               // tax: cartValueTax,
               shippingCharges: req.body.country != "India" ? rate : 0,
               isCouponApplied: req.body.isCouponApplied,
-              discountPrice: req.body.discountValue
+              discountPrice: req.body.discountValue,
+              couponCode: req.body.couponCode,
             });
 
             await order.save({session: session});
@@ -1050,6 +1052,7 @@ const placeOder = async (req, res) => {
                 breadth: 15,
                 height: 20,
                 weight: totalWeight,
+                couponCode: req.body.couponCode
               };
               const result = await axios({
                 url: "https://apiv2.shiprocket.in/v1/external/orders/create/adhoc",
@@ -1097,10 +1100,6 @@ const placeOder = async (req, res) => {
 
               user.orders.push(order._id);
               await user.save({session: session});
-
-              
-
-              
               await session.commitTransaction()
               await session.endSession()
               
@@ -1167,7 +1166,8 @@ const placeGuestOder = async (req, res) => {
         size: Joi.string().valid("S", "M", "L", "XL")
       })),
       isCouponApplied: Joi.boolean(),
-      discountValue: Joi.number()
+      discountValue: Joi.number(),
+      couponCode: Joi.string()
     });
 
     const result = schema.validate(req.body);
@@ -1312,7 +1312,8 @@ const placeGuestOder = async (req, res) => {
               tax: cartValueTax,
               shippingCharges: req.body.isInternational ? rate : 0,
               isCouponApplied: req.body.isCouponApplied,
-              discountPrice: req.body.discountValue
+              discountPrice: req.body.discountValue,
+              couponCode: req.body.couponCode,
             });
 
             await order.save({session: session});
@@ -1382,6 +1383,7 @@ const placeGuestOder = async (req, res) => {
                 breadth: 15,
                 height: 20,
                 weight: totalWeight,
+                couponCode: req.body.couponCode,
               };
               const result = await axios({
                 url: "https://apiv2.shiprocket.in/v1/external/orders/create/adhoc",

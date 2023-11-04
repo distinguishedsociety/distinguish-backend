@@ -32,6 +32,7 @@ const orderMailPrePaid =async  (products,order) => {
         ordStatus: order.orderStatus,
         payType: order.orderType,
         discount: order.discountPrice,
+        couponCode: order.couponCode,
     }
 
     let mailSubject = `New Order Received - Order Number: ${order._id}`
@@ -47,7 +48,7 @@ const orderMailPrePaid =async  (products,order) => {
     const mailObjAdmin = {
         from: 'distinguishedsocietysales@gmail.com',
         to: 'viralsangani1920@gmail.com',
-        cc: ['akshay@thedistinguishedsociety.com','prasad@thedistinguishedsociety.com','admin@thedistinguishedsociety.com', 'sahilakbari8460@gmail.com'],
+        cc: ['akshay@thedistinguishedsociety.com','prasad@thedistinguishedsociety.com','admin@thedistinguishedsociety.com'],
         subject: mailSubject,
         html: htmlTemplate,
     };
@@ -60,7 +61,9 @@ const orderMailPrePaid =async  (products,order) => {
         customerPhone: order.shippingDetails.phoneNumber,
         orderItems: [...updatedProduct],
         customerSupportEmail: 'support@thedistinguishedsociety.com',
-        customerSupportPhone: '+91-2323232222'
+        customerSupportPhone: '+91-2323232222',
+        discount: order.discountPrice,
+        couponCode: order.couponCode,
     }
 
     const sourceFileCustomer = fs.readFileSync(
@@ -110,6 +113,7 @@ const orderMailPostpaid =async  (data,order) => {
         ordStatus: 'Placed',
         payType: data.payment_method,
         discount: data.total_discount,
+        couponCode: data.couponCode,
     }
 
     let mailSubject = `New Order Received - Order Number: ${data.order_id}`
@@ -125,7 +129,7 @@ const orderMailPostpaid =async  (data,order) => {
     const mailObjAdmin = {
         from: 'viralsangani1920@gmail.com',
         to: 'viralsangani3333@gmail.com',
-        cc: ['akshay@thedistinguishedsociety.com','prasad@thedistinguishedsociety.com','admin@thedistinguishedsociety.com', 'sahilakbari8460@gmail.com'],
+        cc: ['akshay@thedistinguishedsociety.com','prasad@thedistinguishedsociety.com','admin@thedistinguishedsociety.com'],
         subject: mailSubject,
         html: htmlTemplate,
     };
@@ -138,7 +142,9 @@ const orderMailPostpaid =async  (data,order) => {
         customerEmail: data.billing_email,
         customerPhone: data.billing_phone,
         customerSupportEmail: 'support@thedistinguishedsociety.com',
-        customerSupportPhone: '+91-2323232222'
+        customerSupportPhone: '+91-2323232222',
+        couponCode: data.couponCode,
+        discount: data.total_discount
     }
 
     const sourceFileCustomer = fs.readFileSync(
