@@ -6,7 +6,7 @@ const path = require('path') ;
 
 const orderMailPrePaid =async  (products,order) => {
     const updatedProduct = products && products.length > 0 && products.map((item) => {
-        const productDetails = {productImage: item.images[0],productName: item.slug,price: item.price * order.currRate, productTitle: item.title}
+        const productDetails = {productImage: item.images[0],productName: item.slug,price: item.price * order.currRate, productTitle: item.title, code: order.currCode}
 
         const quantity = order.products && order.products.length > 0 && order.products.filter((ord) => {
             console.log('product id',ord.product._id.toString(), item._id.toString() )
@@ -64,8 +64,8 @@ const orderMailPrePaid =async  (products,order) => {
         orderItems: [...updatedProduct],
         customerSupportEmail: 'support@thedistinguishedsociety.com',
         customerSupportPhone: '+91-2323232222',
-        discount: order.discountPrice,
-        couponCode: order.couponCode * order.currRate,
+        discount: order.discountPrice * order.currRate,
+        couponCode: order.couponCode,
         currCode: order.currCode,
         currRate: order.currRate
     }
@@ -91,7 +91,7 @@ const orderMailPrePaid =async  (products,order) => {
 
 const orderMailPostpaid =async  (data,order) => {
     const updatedProduct = order && order.length > 0 && order.map((item) => {
-        const productDetails = {productImage: item.product.images[0],productName: item.product.title,price: item.product.price * data.currRate}
+        const productDetails = {productImage: item.product.images[0],productName: item.product.title,price: item.product.price * data.currRate, code: data.currCode}
 
         const quantity = data.order_items && data.order_items.length > 0 && data.order_items.filter((ord) => {
            
@@ -116,7 +116,7 @@ const orderMailPostpaid =async  (data,order) => {
         pincode: data.shipping_pincode,
         ordStatus: 'Placed',
         payType: data.payment_method,
-        discount: data.total_discount,
+        discount: data.total_discount * data.currRate,
         couponCode: data.couponCode,
         currCode: data.currCode,
         currRate: data.currRate
@@ -150,7 +150,7 @@ const orderMailPostpaid =async  (data,order) => {
         customerSupportEmail: 'support@thedistinguishedsociety.com',
         customerSupportPhone: '+91-2323232222',
         couponCode: data.couponCode,
-        discount: data.total_discount,
+        discount: data.total_discount * data.currRate,
         currCode: data.currCode,
         currRate: data.currRate
     }
