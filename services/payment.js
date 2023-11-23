@@ -5,11 +5,11 @@ const instance = new Razorpay({
   key_secret: "ZBPKCXmiWfserwPATHmLL0nR",
 });
 
-const createOrder = async (totalCartValue, id) => {
-  console.log(totalCartValue)
+const createOrder = async (totalCartValue, id, currCode) => {
+  console.log('totalCartValue',totalCartValue)
   const order = await instance.orders.create({
-    amount: totalCartValue * 100,
-    currency: "INR",
+    amount: totalCartValue.toFixed(2) * 100,
+    currency: currCode,
     receipt: id,
     // notes: {
     //   key1: "value3",

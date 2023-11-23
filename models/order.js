@@ -82,6 +82,12 @@ const orderSchema = new mongoose.Schema(
     },
     couponCode: {
       type: String,
+    },
+    currCode: {
+      type: String,
+    },
+    currRate: {
+      type: Number,
     }
   },
   { timestamps: true }

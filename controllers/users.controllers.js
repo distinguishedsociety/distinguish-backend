@@ -798,7 +798,7 @@ const placeOder = async (req, res) => {
       phoneNumber: Joi.string().required(),
       isCouponApplied: Joi.boolean(),
       discountValue: Joi.number(),
-      couponCode: Joi.string().allow('', null),
+      couponCode: Joi.string().allow(''),
     });
     const result = schema.validate(req.body);
     console.log("resuult" , result)
@@ -977,6 +977,8 @@ const placeOder = async (req, res) => {
               isCouponApplied: req.body.isCouponApplied,
               discountPrice: req.body.discountValue,
               couponCode: req.body.couponCode,
+              currCode: req.body.countryCode,
+              currRate: req.body.currencyRate
             });
 
             await order.save({session: session});
@@ -1167,7 +1169,9 @@ const placeGuestOder = async (req, res) => {
       })),
       isCouponApplied: Joi.boolean(),
       discountValue: Joi.number(),
-      couponCode: Joi.string()
+      couponCode: Joi.string(),
+      countryCode: Joi.string().required(),
+      currencyRate: Joi.number().required(),
     });
 
     const result = schema.validate(req.body);
@@ -1314,6 +1318,8 @@ const placeGuestOder = async (req, res) => {
               isCouponApplied: req.body.isCouponApplied,
               discountPrice: req.body.discountValue,
               couponCode: req.body.couponCode,
+              currCode: req.body.countryCode,
+              currRate: req.body.currencyRate
             });
 
             await order.save({session: session});
@@ -1422,8 +1428,9 @@ const placeGuestOder = async (req, res) => {
             } else {
               // -Send initiate payment link
               const orderId = await createOrder(
-                totalCartValue,
-                order._id.toString()
+                totalCartValue * +req.body.currencyRate,
+                order._id.toString(),
+                req.body.countryCode
               );
               order.paymentId = orderId.id;
               await order.save({session: session})

@@ -33,6 +33,8 @@ const orderMailPrePaid =async  (products,order) => {
         payType: order.orderType,
         discount: order.discountPrice,
         couponCode: order.couponCode,
+        currCode: order.currCode,
+        currRate: order.currRate
     }
 
     let mailSubject = `New Order Received - Order Number: ${order._id}`
@@ -64,6 +66,8 @@ const orderMailPrePaid =async  (products,order) => {
         customerSupportPhone: '+91-2323232222',
         discount: order.discountPrice,
         couponCode: order.couponCode,
+        currCode: order.currCode,
+        currRate: order.currRate
     }
 
     const sourceFileCustomer = fs.readFileSync(
@@ -82,7 +86,7 @@ const orderMailPrePaid =async  (products,order) => {
     };
     const response1 =await sendEmail(mailObjAdmin)
     const response2 =await sendEmail(mailObjCustomer)
-
+    
 }
 
 const orderMailPostpaid =async  (data,order) => {

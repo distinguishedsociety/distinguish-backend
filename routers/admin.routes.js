@@ -9,7 +9,7 @@ const productController = require("../controllers/product.controllers");
 const collectionsController = require("../controllers/collection.controllers");
 const inventoryController = require("../controllers/inventory.controllers");
 const couponController = require("../controllers/coupon.controllers");
-
+const continentController = require("../controllers/continent.controllers")
 // var upload = multer({
 //   //   storage: storage,
 //   fileFilter: (req, file, cb) => {
@@ -104,5 +104,14 @@ router.delete("/coupon/:id", couponController.deleteCoupon);
 
 router.post('/admin-login', adminController.verfiyAdminUser)
 router.post('/admin-reset-password', adminController.resetPassword)
+
+
+//Continent 
+
+router.get('/get-continent', continentController.getContinent)
+router.post('/create-continent', continentController.createContinent)
+router.post('/update-continent', continentController.updateContinent)
+router.post('/id-continent', continentController.findByIdContinent)
+router.post('/delete-continent', continentController.deleteContinent)
 
 module.exports = router;
