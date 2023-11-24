@@ -1390,8 +1390,8 @@ const placeGuestOder = async (req, res) => {
                 height: 20,
                 weight: totalWeight,
                 couponCode: req.body.couponCode,
-                currCode: req.body.currCode,
-                currRate: req.body.currRate
+                currCode: req.body.countryCode,
+                currRate: req.body.currencyRate
               };
               const result = await axios({
                 url: "https://apiv2.shiprocket.in/v1/external/orders/create/adhoc",

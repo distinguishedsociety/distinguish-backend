@@ -8,7 +8,7 @@ const continentSchema = new mongoose.Schema(
       trim: true
     },
     currencyRate: {
-      type: String,
+      type: Number,
       required: true,
       trim: true,
     },
