@@ -14,7 +14,7 @@ const orderMailPrePaid =async  (products,order) => {
         })
         const qty = quantity.length > 0 ? quantity[0].qty : 0
         return { productImage: productDetails.productImage,
-        productName: `https://www.thedistinguishedsociety.com/products/${productDetails.productName}`, price: productDetails.price, quantity: qty, productTitle: productDetails.productTitle}
+        productName: `https://www.thedistinguishedsociety.com/products/${productDetails.productName}`, price: productDetails.price, quantity: qty, productTitle: productDetails.productTitle, code: productDetails.code}
     })
 
     const datasourceAdmin = {
@@ -99,7 +99,7 @@ const orderMailPostpaid =async  (data,order) => {
         })
         const qty = quantity.length > 0 ? quantity[0].units : 0
         return { productImage: productDetails.productImage,
-        productName: productDetails.productName, price: productDetails.price, quantity: qty}
+        productName: productDetails.productName, price: productDetails.price, quantity: qty,code: productDetails.code}
     })
 
     const datasourceAdmin = {
