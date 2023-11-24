@@ -87,7 +87,7 @@
             <br>
             <p><strong>Coupon Details:</strong></p>
             <p><strong>Coupon Code: {{couponCode}}</strong></p>
-            <p><strong>discount:</strong>{{currCode}} {{discount}}</p>
+            <p><strong>discount:</strong> {{currCode}} {{discount}}</p>
                 
             <h2 class="title-label">Order Details:</h2>
             {{#each orderItems}}
@@ -96,7 +96,7 @@
                 <div class="product-details">
                     <p><strong>Product:</strong> <a href={{this.productName}} target="_blank">{{this.productTitle}}</a></p>
                     <p class="grey-color"><strong>Quantity:</strong> {{this.quantity}}</p>
-                    <p><strong>Price:</strong> {{this.code}} {{this.price}} each</p>
+                    <p><strong>Price:</strong> <p>{{this.code}}</p> {{this.price}} each</p>
                 </div>
             </div>
             {{/each}}
