@@ -799,6 +799,8 @@ const placeOder = async (req, res) => {
       isCouponApplied: Joi.boolean(),
       discountValue: Joi.number(),
       couponCode: Joi.string().allow(''),
+      countryCode: Joi.string().required(),
+      currencyRate: Joi.number().required(),
     });
     const result = schema.validate(req.body);
     console.log("resuult" , result)
@@ -943,14 +945,14 @@ const placeOder = async (req, res) => {
             // console.log("CartValueTax: ", cartValueTax)
             console.log("Shipping charges: ", rate)
             let totalCartValue;
+            const cartValueInCurrency = parseFloat((cartValue * req.body.currencyRate).toFixed(2));
+            const rateInCurrency = parseFloat((823.22 * req.body.currencyRate).toFixed(2));
+            const discountInCurrency = parseFloat((discount * req.body.currencyRate).toFixed(2));
             if (req.body.country != "India") {
-              totalCartValue = cartValue  + parseInt(rate) - discount;
+              totalCartValue = cartValueInCurrency + rateInCurrency - discountInCurrency;
             } else {
-              totalCartValue = cartValue - discount; 
+              totalCartValue = cartValueInCurrency - discountInCurrency; 
             }
-            totalCartValue = Math.round(totalCartValue)
-            console.log("Cart value: ", cartValue);
-            console.log("Total cart value: ", totalCartValue)
 
             // -Create order
             // save razorpay order id and amount too
@@ -1054,7 +1056,9 @@ const placeOder = async (req, res) => {
                 breadth: 15,
                 height: 20,
                 weight: totalWeight,
-                couponCode: req.body.couponCode
+                couponCode: req.body.couponCode,
+                currCode: req.body.countryCode,
+                currRate: req.body.currencyRate
               };
               const result = await axios({
                 url: "https://apiv2.shiprocket.in/v1/external/orders/create/adhoc",
@@ -1095,7 +1099,8 @@ const placeOder = async (req, res) => {
               
               const orderId = await createOrder(
                 totalCartValue,
-                order._id.toString()
+                order._id.toString(),
+                req.body.countryCode
               );
               order.paymentId = orderId.id;
               await order.save({session: session})
@@ -1287,13 +1292,15 @@ const placeGuestOder = async (req, res) => {
 
             const cartValueTax = cartValue * 0.12;
             let totalCartValue;
+            const cartValueInCurrency = parseFloat((cartValue * req.body.currencyRate).toFixed(2));
+            const rateInCurrency = parseFloat((823.22 * req.body.currencyRate).toFixed(2));
+            const discountInCurrency = parseFloat((discount * req.body.currencyRate).toFixed(2));
             if (req.body.isInternational) {
-              totalCartValue = cartValue  + parseInt(rate) - discount;
+              totalCartValue = cartValueInCurrency + rateInCurrency - discountInCurrency;
             } else {
-              totalCartValue = cartValue - discount;
+              totalCartValue = cartValueInCurrency - discountInCurrency;
             }
             totalCartValue = Math.round(totalCartValue)
-
             // -Create order
             // save razorpay order id and amount too
             const order = new Order({
@@ -1430,7 +1437,7 @@ const placeGuestOder = async (req, res) => {
             } else {
               // -Send initiate payment link
               const orderId = await createOrder(
-                totalCartValue * +req.body.currencyRate,
+                totalCartValue,
                 order._id.toString(),
                 req.body.countryCode
               );
