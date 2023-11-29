@@ -26,6 +26,21 @@ const createContinent = async (req,res) => {
               .status(400)
               .send({ status: "error", message: result.error.details[0].message });
           
+              const allContinent = await Continent.find()
+              const isExist = allContinent.find((item) => {
+                if(item.name == req.body.name){
+                    return item
+                }else if(item.countryCode == req.body.currencyCode){
+                    return item
+                }else if(item.name == req.body.name && item.countryCode == req.body.currencyCode){
+                    return item
+                }
+              })
+
+              if(isExist){
+                return res.status(400).send({status: 'error',message: 'Dublicate records found'})
+              }
+              
               const continent = Continent({ name: req.body.name, countryCode: req.body.currencyCode, currencyRate: req.body.currencyRate});
               await continent.save();   
               return res.status(201).send({status: 'success',data: continent, message: 'Continent created successfully' })   
