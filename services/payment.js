@@ -8,7 +8,7 @@ const instance = new Razorpay({
 const createOrder = async (totalCartValue, id, currCode) => {
   console.log('totalCartValue',totalCartValue)
   const order = await instance.orders.create({
-    amount: (totalCartValue.toFixed(2) * 100),
+    amount: (totalCartValue * 100).toFixed(),
     currency: currCode,
     receipt: id,
     // notes: {

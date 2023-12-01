@@ -945,15 +945,15 @@ const placeOder = async (req, res) => {
             // console.log("CartValueTax: ", cartValueTax)
             console.log("Shipping charges: ", rate)
             let totalCartValue;
-            const cartValueInCurrency = parseFloat((cartValue * req.body.currencyRate).toFixed(2));
-            const rateInCurrency = parseFloat((823.22 * req.body.currencyRate).toFixed(2));
-            const discountInCurrency = parseFloat((discount * req.body.currencyRate).toFixed(2));
+            const cartValueInCurrency = parseFloat(cartValue.toFixed(2));
+            const rateInCurrency = parseFloat(823.22);
+            const discountInCurrency = parseFloat(discount);
             if (req.body.country != "India") {
-              totalCartValue = cartValueInCurrency + rateInCurrency - discountInCurrency;
+              totalCartValue = ((cartValueInCurrency - discountInCurrency) + rateInCurrency) * req.body.currencyRate;
             } else {
-              totalCartValue = cartValueInCurrency - discountInCurrency; 
+              totalCartValue = (cartValueInCurrency - discountInCurrency) * req.body.currencyRate; 
             }
-
+            totalCartValue = totalCartValue.toFixed(2)
             // -Create order
             // save razorpay order id and amount too
             const order = new Order({
@@ -1292,15 +1292,15 @@ const placeGuestOder = async (req, res) => {
 
             const cartValueTax = cartValue * 0.12;
             let totalCartValue;
-            const cartValueInCurrency = parseFloat(cartValue );
+            const cartValueInCurrency = parseFloat(cartValue.toFixed(2));
             const rateInCurrency = parseFloat(823.22);
             const discountInCurrency = parseFloat(discount);
             if (req.body.isInternational) {
-              totalCartValue = (cartValueInCurrency + rateInCurrency - discountInCurrency) * req.body.currencyRate;
-            } else {
+              totalCartValue = ((cartValueInCurrency - discountInCurrency) + rateInCurrency) * req.body.currencyRate;
+            } else {  
               totalCartValue = (cartValueInCurrency - discountInCurrency) * req.body.currencyRate;
             }
-            totalCartValue = Math.round(totalCartValue)
+            totalCartValue = totalCartValue.toFixed(2)
             // -Create order
             // save razorpay order id and amount too
             const order = new Order({

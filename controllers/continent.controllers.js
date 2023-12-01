@@ -28,11 +28,11 @@ const createContinent = async (req,res) => {
           
               const allContinent = await Continent.find()
               const isExist = allContinent.find((item) => {
-                if(item.name == req.body.name){
+                if(item.name.toLowerCase() == req.body.name.toLowerCase()){
                     return item
-                }else if(item.countryCode == req.body.currencyCode){
+                }else if(item.countryCode.toLowerCase() == req.body.currencyCode.toLowerCase()){
                     return item
-                }else if(item.name == req.body.name && item.countryCode == req.body.currencyCode){
+                }else if(item.name.toLowerCase() == req.body.name.toLowerCase() && item.countryCode.toLowerCase() == req.body.currencyCode.toLowerCase()){
                     return item
                 }
               })
