@@ -5,7 +5,7 @@ const path = require('path') ;
 
 
 const orderMailPrePaid =async  (products,order) => {
-    console.log('email product', products)
+    console.log('email product', order.products)
     const updatedProduct = products ? (products.length > 0 ? products : order.products).map((item) => {
         const productDetails = {productImage: item.images[0],productName: item.slug,price: (item.price * order.currRate).toFixed(2), productTitle: item.title, code: order.currCode}
 
