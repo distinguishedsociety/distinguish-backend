@@ -1513,7 +1513,7 @@ const razorpayWebhook = async (req, res) => {
     order.orderStatus = "Placed"
     await order.save()
     let user;
-    let products = []
+    let cartProduct = []
     if(order.user){
       user = await User.findOne({_id: order.user}).populate({
         path: "cart",
@@ -1527,7 +1527,7 @@ const razorpayWebhook = async (req, res) => {
         if(!product){
           console.log("Product not found.")
         }else{
-          products.push(product)
+          cartProduct.push(product)
           product.inventory[cartItem.size] = product.inventory[cartItem.size] - cartItem.qty
           await product.save()
         }
@@ -1545,15 +1545,15 @@ const razorpayWebhook = async (req, res) => {
         if(!product){
           console.log("Product not found.")
         }else{
-          products = [...products,product]
-          product.inventory[item.size] = product.inventory[item.size] - item.qty
+          cartProduct.push(product)
+          product.inventory[item.size] = product.inventory[item.size] ? product.inventory[item.size] - item.qty  : product.inventory[item.size]  
           await product.save()
         }
       })
     }
     console.log(user)
-    console.log('ordermail-->', products,order)
-    orderMailPrePaid(products, order)
+    console.log('ordermail-->', cartProduct,order)
+    orderMailPrePaid(cartProduct, order)
 
     const email = "demo123@demo.com";
     const password = "Passw0rd.";
