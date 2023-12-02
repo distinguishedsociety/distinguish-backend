@@ -5,7 +5,8 @@ const path = require('path') ;
 
 
 const orderMailPrePaid =async  (products,order) => {
-    const updatedProduct = products && products.length > 0 && products.map((item) => {
+    console.log('email product', products)
+    const updatedProduct = products && products.length > 0 ? products.map((item) => {
         const productDetails = {productImage: item.images[0],productName: item.slug,price: (item.price * order.currRate).toFixed(2), productTitle: item.title, code: order.currCode}
 
         const quantity = order.products && order.products.length > 0 && order.products.filter((ord) => {
@@ -15,7 +16,8 @@ const orderMailPrePaid =async  (products,order) => {
         const qty = quantity.length > 0 ? quantity[0].qty : 0
         return { productImage: productDetails.productImage,
         productName: `https://www.thedistinguishedsociety.com/products/${productDetails.productName}`, price: productDetails.price, quantity: qty, productTitle: productDetails.productTitle, code: productDetails.code}
-    })
+    }) : [{productImage: '',
+        productName: '', price: 0, quantity: 0, productTitle: '', code: ''}]
 
     const datasourceAdmin = {
         orderNumber: order._id,
