@@ -1545,7 +1545,7 @@ const razorpayWebhook = async (req, res) => {
         if(!product){
           console.log("Product not found.")
         }else{
-          products.push(product)
+          products = [...products,product]
           product.inventory[item.size] = product.inventory[item.size] - item.qty
           await product.save()
         }
