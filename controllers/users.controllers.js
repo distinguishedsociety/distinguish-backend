@@ -1550,7 +1550,7 @@ const razorpayWebhook = async (req, res) => {
       })
     }
     console.log(user)
-
+    orderMailPrePaid(products, order)
 
     const email = "demo123@demo.com";
     const password = "Passw0rd.";
@@ -1646,7 +1646,6 @@ const razorpayWebhook = async (req, res) => {
       console.log("Failed to create order on shiprocket. Order: ", req.body);
       return res.status(200).send();
     }
-    orderMailPrePaid(products, order)
     return res.status(200).send()
     //TODO: notify admin
   } catch (error) {
