@@ -1539,9 +1539,10 @@ const razorpayWebhook = async (req, res) => {
     }else{
       console.log('console log', order.products)
       order.products.map(async (item) => {
-        console.log('product-->', item)
+        
         const proId = item.product._id
         const product = await Product.findById(proId)
+        console.log('product-->', product)
         if(!product){
           console.log("Product not found.")
         }else{
