@@ -20,7 +20,7 @@ const orderMailPrePaid =async  (products,order) => {
         const productDetails = {productImage: item.product.images[0],productName: item.product.slug,price: (item.product.price * order.currRate).toFixed(2), productTitle: item.product.title, code: order.currCode}
 
         const quantity = order.products && order.products.length > 0 && order.products.filter((ord) => {
-            console.log('product id',ord.product._id.toString(), item._id.toString() )
+            
             return ord.product._id.toString() == item.product._id.toString()
         })
         const qty = quantity.length > 0 ? quantity[0].qty : 0
