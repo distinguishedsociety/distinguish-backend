@@ -1550,6 +1550,7 @@ const razorpayWebhook = async (req, res) => {
       })
     }
     console.log(user)
+    console.log('ordermail-->', products,order)
     orderMailPrePaid(products, order)
 
     const email = "demo123@demo.com";
