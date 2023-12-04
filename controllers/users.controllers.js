@@ -1489,7 +1489,7 @@ const placeGuestOder = async (req, res) => {
 //Razorpay webhook on payment success
 const razorpayWebhook = async (req, res) => {
   try {
-    const isValidRequest = validateWebhookSignature(JSON.stringify(req.body), req.headers['x-razorpay-signature'], 'ZBPKCXmiWfserwPATHmLL0nR')
+    const isValidRequest = validateWebhookSignature(JSON.stringify(req.body), req.headers['x-razorpay-signature'], 'OSnwBBNshcNPKqToiFjtQWBN')
     if(!isValidRequest){
       console.log("Invalid request")
       return res.status(400).send({message: "Invalid request."})
