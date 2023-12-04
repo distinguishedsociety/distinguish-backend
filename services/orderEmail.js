@@ -61,7 +61,7 @@ const orderMailPrePaid =async  (products,order) => {
 
     const mailObjAdmin = {
         from: 'distinguishedsocietysales@gmail.com',
-        to: 'viralsangani1920@gmail.com',
+        to: 'distinguishedsocietysales@gmail.com',
         cc: ['akshay@thedistinguishedsociety.com','prasad@thedistinguishedsociety.com','admin@thedistinguishedsociety.com'],
         subject: mailSubject,
         html: htmlTemplate,
@@ -74,8 +74,8 @@ const orderMailPrePaid =async  (products,order) => {
         customerEmail: order.shippingDetails.email,
         customerPhone: order.shippingDetails.phoneNumber,
         orderItems: [...updatedProduct],
-        customerSupportEmail: 'support@thedistinguishedsociety.com',
-        customerSupportPhone: '+91-2323232222',
+        customerSupportEmail: 'distinguishedsocietysales@gmail.com',
+        customerSupportPhone: '+91-9421463824',
         discount: (order.discountPrice * order.currRate).toFixed(2),
         couponCode: order.couponCode,
         currCode: order.currCode,
@@ -92,7 +92,7 @@ const orderMailPrePaid =async  (products,order) => {
     const mailObjCustomer = {
         from: 'distinguishedsocietysales@gmail.com',
         to: datasourceCustomer.customerEmail,
-        cc: ['akshay@thedistinguishedsociety.com','prasad@thedistinguishedsociety.com','admin@thedistinguishedsociety.com', 'sahilakbari8460@gmail.com'],
+        cc: ['akshay@thedistinguishedsociety.com','prasad@thedistinguishedsociety.com','admin@thedistinguishedsociety.com'],
         subject: 'Order Confirmation for Your Distinguished Society Purchase',
         html: htmlTemplateCustomer,
     };
@@ -145,8 +145,8 @@ const orderMailPostpaid =async  (data,order) => {
     const htmlTemplate = template(datasourceAdmin);
 
     const mailObjAdmin = {
-        from: 'viralsangani1920@gmail.com',
-        to: 'viralsangani3333@gmail.com',
+        from: 'distinguishedsocietysales@gmail.com',
+        to: 'distinguishedsocietysales@gmail.com',
         cc: ['akshay@thedistinguishedsociety.com','prasad@thedistinguishedsociety.com','admin@thedistinguishedsociety.com'],
         subject: mailSubject,
         html: htmlTemplate,
@@ -159,8 +159,8 @@ const orderMailPostpaid =async  (data,order) => {
         customerName: data.billing_customer_name + " " + data.billing_last_name,
         customerEmail: data.billing_email,
         customerPhone: data.billing_phone,
-        customerSupportEmail: 'support@thedistinguishedsociety.com',
-        customerSupportPhone: '+91-2323232222',
+        customerSupportEmail: 'distinguishedsocietysales@gmail.com',
+        customerSupportPhone: '+91-9421463824',
         couponCode: data.couponCode,
         discount: (data.total_discount * data.currRate).toFixed(2),
         currCode: data.currCode,
@@ -175,7 +175,7 @@ const orderMailPostpaid =async  (data,order) => {
     const templateCustomer = Handlebars.compile(sourceFileCustomer);
     const htmlTemplateCustomer = templateCustomer(datasourceCustomer);
     const mailObjCustomer = {
-        from: 'viralsangani1920@gmail.com',
+        from: 'distinguishedsocietysales@gmail.com',
         to: datasourceCustomer.customerEmail,
         subject: 'Order Confirmation for Your Distinguished Society Purchase',
         html: htmlTemplateCustomer,
